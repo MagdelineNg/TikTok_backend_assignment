@@ -35,12 +35,14 @@ func main() {
 		ctx.JSON(consts.StatusOK, utils.H{"message": "pong"})
 	})
 
+	//change /api/send into payload that I input -> save to DB
 	h.POST("/api/send", sendMessage)
 	h.GET("/api/pull", pullMessage)
 
 	h.Spin()
 }
 
+// calls rpc server handler.go Send function
 func sendMessage(ctx context.Context, c *app.RequestContext) {
 	var req api.SendRequest
 	err := c.Bind(&req)
