@@ -32,7 +32,7 @@ bash ./scripts/api-regen.sh
 - Error handling: When chatID does not exist -> ```500 ```
 ![pull-fail.png](assets%2Fimages%2Fpull-fail.png)
 
-### Concurrency Testing using Jmeter
+## Concurrency Testing using Jmeter
 - Tested using 20, 500 and 1000 threads
 - All but 2 threads have HTTP Status 200 OK
 - Results in ```concurrency-testing-res.csv```
