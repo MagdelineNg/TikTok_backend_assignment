@@ -58,31 +58,33 @@ func (c *RedisClient) SaveMessage(ctx context.Context, roomID string, message *M
 
 func (c *RedisClient) GetMessagesByRoomID(ctx context.Context, roomID string, start, end int64, reverse bool) ([]*Message, error) {
 	var (
-		rawMessages []string
-		messages    []*Message
-		err         error
+		dbMessages []string
+		messages   []*Message
+		err        error
 	)
 
 	if reverse {
 		// Desc order with time -> first message is the latest message
-		rawMessages, err = c.cli.ZRevRange(ctx, roomID, start, end).Result()
+		dbMessages, err = c.cli.ZRevRange(ctx, roomID, start, end).Result()
 		if err != nil {
 			return nil, err
 		}
 	} else {
 		// Asc order with time -> first message is the earliest message
-		rawMessages, err = c.cli.ZRange(ctx, roomID, start, end).Result()
+		dbMessages, err = c.cli.ZRange(ctx, roomID, start, end).Result()
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	for _, msg := range rawMessages {
+	for _, msg := range dbMessages {
 		temp := &Message{}
+		//prase json data msg and store in temp
 		err := json.Unmarshal([]byte(msg), temp)
 		if err != nil {
 			return nil, err
 		}
+		//append temp to messages
 		messages = append(messages, temp)
 	}
 

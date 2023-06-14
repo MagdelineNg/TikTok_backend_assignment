@@ -18,7 +18,7 @@ func getRoomID(chat string) (string, error) {
 	lowercase := strings.ToLower(chat)
 	senders := strings.Split(lowercase, ":")
 	if len(senders) != 2 {
-		err := fmt.Errorf("Invalid Chat ID '%s'. Chat ID should be in the format user1:user2", chat)
+		err := fmt.Errorf("chat room %s should have 2 users exactly, Chat ID should be in the format user1:user2", chat)
 		return "", err
 	}
 
@@ -36,10 +36,16 @@ func getRoomID(chat string) (string, error) {
 func validateSendRequest(req *rpc.SendRequest) error {
 	senders := strings.Split(req.Message.Chat, ":")
 	if len(senders) != 2 {
-		err := fmt.Errorf("invalid Chat ID '%s', should be in the format of user1:user2", req.Message.GetChat())
+		err := fmt.Errorf("chat room %s should have 2 users exactly, should be in the format of user1:user2", req.Message.GetChat())
 		return err
 	}
 	sender1, sender2 := senders[0], senders[1]
+
+	// Avoid user sending empty string for user
+	if sender1 == "" || sender2 == "" {
+		err := fmt.Errorf("both users %s and %s must be strings", sender1, sender2)
+		return err
+	}
 
 	if req.Message.GetSender() != sender1 && req.Message.GetSender() != sender2 {
 		err := fmt.Errorf("sender '%s' not in the chat room", req.Message.GetSender())
@@ -81,7 +87,7 @@ func (s *IMServiceImpl) Pull(ctx context.Context, req *rpc.PullRequest) (*rpc.Pu
 	}
 
 	start := req.GetCursor()
-	end := start + int64(req.GetLimit()) // did not minus 1 on purpose for hasMore check later on
+	end := start + int64(req.GetLimit()) //get 1 more than required to check hasMore
 
 	messages, err := rdb.GetMessagesByRoomID(ctx, roomID, start, end, req.GetReverse())
 	if err != nil {
@@ -94,10 +100,9 @@ func (s *IMServiceImpl) Pull(ctx context.Context, req *rpc.PullRequest) (*rpc.Pu
 	hasMore := false
 	for _, msg := range messages {
 		if counter+1 > req.GetLimit() {
-			// having extra value here means it has more data
 			hasMore = true
-			nextCursor = end
-			break // do not return the last message
+			nextCursor = end //assign nextCursor to next message after limit
+			break            // do not return the message after the limit
 		}
 		temp := &rpc.Message{
 			Chat:     req.GetChat(),
