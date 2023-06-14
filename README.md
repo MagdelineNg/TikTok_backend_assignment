@@ -22,15 +22,15 @@ bash ./scripts/api-regen.sh
 ## API Testing using Postman
 1. ```Send()``` API
 - Sending a text between 2 users -> ```200 OK```
-![Screenshot 2023-06-12 at 4.10.37 PM.png](..%2F..%2F..%2FDesktop%2FScreenshot%202023-06-12%20at%204.10.37%20PM.png)
+![send-success.png](assets%2Fimages%2Fsend-success.png)
 - Error handling: Sending a text between 2 users where sender is invalid -> ```500 ```
-![Screenshot 2023-06-12 at 4.14.42 PM.png](..%2F..%2F..%2F..%2F..%2Fvar%2Ffolders%2F9m%2Fcfh_sw491g92g55l_8_j2j1w0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_4ElihD%2FScreenshot%202023-06-12%20at%204.14.42%20PM.png)
+![send-fail.png](assets%2Fimages%2Fsend-fail.png)
 
 2. ```Pull()``` API
 - Getting texts between 2 users -> ```500 ```
-![Screenshot 2023-06-12 at 8.27.13 PM.png](..%2F..%2F..%2F..%2F..%2Fvar%2Ffolders%2F9m%2Fcfh_sw491g92g55l_8_j2j1w0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_dhrl6i%2FScreenshot%202023-06-12%20at%208.27.13%20PM.png)
+![pull-success.png](assets%2Fimages%2Fpull-success.png)
 - Error handling: When chatID does not exist -> ```500 ```
-![Screenshot 2023-06-14 at 3.19.19 PM.png](..%2F..%2F..%2FDesktop%2FScreenshot%202023-06-14%20at%203.19.19%20PM.png)
+![pull-fail.png](assets%2Fimages%2Fpull-fail.png)
 
 ### Concurrency Testing using Jmeter
 - Tested using 20, 500 and 1000 threads
